@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.DataInputStream;
@@ -23,6 +25,7 @@ public class Client extends JFrame implements ActionListener
   static Socket sok;
   static DataInputStream di;
   static DataOutputStream dout;
+  Boolean typing;
     public Client()
     {
         p1= new JPanel();
@@ -87,7 +90,20 @@ public class Client extends JFrame implements ActionListener
          lab4.setForeground(Color.WHITE);
          lab4.setBounds(120,40,100,10);
          p1.add(lab4);
+         // now we need to add Timer;
+         Timer t= new Timer(1,new ActionListener(){
+             @Override
+             public void actionPerformed(ActionEvent ae)
+            {
+                     if(!typing)
+                {
+                    lab4.setText("Active Now");
+                }
          
+            }
+         });
+         // for 2 second
+         t.setInitialDelay(2000);
          // text field to enter messages;
          t1=new JTextField();
          b1=new JButton("Send");
@@ -108,7 +124,25 @@ public class Client extends JFrame implements ActionListener
          ta.setWrapStyleWord(true);
          ta.setFont(new Font("SAN_SERIF",Font.PLAIN,20));
          add(ta);
-         
+           // ad key lisner on textfield
+          t1.addKeyListener(new KeyAdapter(){
+             @Override
+             public void keyPressed(KeyEvent ke)
+                 {
+                     lab4.setText("Typing.....");
+                     t.stop();
+                     typing=true;
+                 }
+             @Override
+             public void keyReleased(KeyEvent ke)
+                  {
+                     typing=false;
+                     if(!t.isRunning())
+                    {
+                      t.start();
+                    }
+                  }
+         });
          
          setLayout(null);
          setSize(400,550);
